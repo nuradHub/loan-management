@@ -28,4 +28,14 @@ body,
   #payment-receipt, #payment-receipt *{
     visibility: visible;
   }
+  #dashboard, #dashboard *{
+    visibility: visible;
+  }
+  #dashboard{
+    position: fixed;
+    top: 2%;
+    bottom: 0;
+    left: 0;
+    right: 0;
+  }
 }
