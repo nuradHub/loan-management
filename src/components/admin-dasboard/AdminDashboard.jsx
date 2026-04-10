@@ -177,10 +177,20 @@ const AdminDashboard = () => {
   const activeLoansCount = acceptedLoans.filter(loan => loan.status === 'approved').length;
   const totalBorrowers = loans?.filter(loan => loan.status === 'pending').length || 0;
 
-  const paymentsToday = acceptedLoans.filter(loan => {
-    const isToday = new Date(loan.updatedAt).toDateString() === new Date().toDateString();
-    return loan.status === 'pending repayment' && isToday;
+  const totalAmountPaidToday = acceptedLoans
+    .filter(loan => {
+      const updated = new Date(loan.updatedAt);
+      const today = new Date();
+      return loan.status === 'completed' && updated.toDateString() === today.toDateString();
+    })
+    .reduce((sum, loan) => sum + (Number(loan.amount) || 0), 0);
+
+  const totalPeoplePaidToday = acceptedLoans.filter(loan => {
+    const updated = new Date(loan.updatedAt);
+    const today = new Date();
+    return loan.status === 'completed' && updated.toDateString() === today.toDateString();
   }).length;
+
 
   const pendingRequestsCount = loans.filter(loan => loan.status === 'pending').length;
 
@@ -194,9 +204,11 @@ const AdminDashboard = () => {
   const targetBorrowers = 200;
   const progressPercentage = Math.min((totalBorrowersCount / targetBorrowers) * 100, 100);
 
-  const handlePrint = ()=> {
+  const handlePrint = () => {
     window.print()
   }
+
+  console.log("Status Check:", acceptedLoans.map(l => ({ s: l.status, date: l.updatedAt })));
 
   return (
     <div className="flex w-full h-screen">
@@ -263,8 +275,11 @@ const AdminDashboard = () => {
                   <span className="text-2xl font-bold text-slate-800">{activeLoansCount && activeLoansCount}</span>
                 </div>
                 <div className="bg-white p-5 rounded-lg shadow-sm border-l-4 border-green-500 flex flex-col gap-1">
-                  <span className="text-xs font-bold text-slate-500 uppercase">Payments Today</span>
-                  <span className="text-2xl font-bold text-slate-800">₦{paymentsToday && paymentsToday}</span>
+                  <span className="text-xs font-bold text-slate-500 uppercase tracking-tight">Payments Today</span>
+                  <div className="flex flex-col">
+                    <span className="text-2xl font-bold text-slate-800">₦{totalAmountPaidToday.toLocaleString()}</span>
+                    <span className="text-[10px] text-slate-400 font-medium italic">From {totalPeoplePaidToday} settled {totalPeoplePaidToday === 1 ? 'loan' : 'loans'}</span>
+                  </div>
                 </div>
                 <div className="bg-white p-5 rounded-lg shadow-sm border-l-4 border-yellow-500 flex flex-col gap-1">
                   <span className="text-xs font-bold text-slate-500 uppercase">Pending Requests</span>
@@ -282,7 +297,7 @@ const AdminDashboard = () => {
                 <div className="flex-2 bg-white shadow-sm p-5 rounded border border-slate-100">
                   <div className="flex justify-between items-center mb-4">
                     <h2 className="font-bold text-slate-700">Recent Loan Applications</h2>
-                    <button className="text-blue-600 text-xs hover:underline" onClick={()=> setSelectedMenu('Loans')}>View All</button>
+                    <button className="text-blue-600 text-xs hover:underline" onClick={() => setSelectedMenu('Loans')}>View All</button>
                   </div>
                   <div className="overflow-x-auto">
                     <table className="w-full border-collapse">
@@ -317,7 +332,7 @@ const AdminDashboard = () => {
                       <span className="font-bold text-slate-700">{totalBorrowers && totalBorrowers}</span>
                     </div>
                     <div className="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
-                      <div className="bg-blue-600 h-full" style={{ width: `${progressPercentage}%`}}></div>
+                      <div className="bg-blue-600 h-full" style={{ width: `${progressPercentage}%` }}></div>
                     </div>
                     <p className="text-[11px] text-slate-400">{progressPercentage}% of targets reached for this month's collection.</p>
                     <button className="mt-4 w-full bg-blue-600 text-white py-2 rounded text-sm font-medium hover:bg-blue-700 transition-colors" onClick={handlePrint}>
