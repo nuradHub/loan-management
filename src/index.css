@@ -21,21 +21,38 @@ body,
   display: none;
 }
 
-@media print{
+@media print {
   body * {
-    visibility: hidden;
+    visibility: hidden !important;
   }
-  #payment-receipt, #payment-receipt *{
-    visibility: visible;
+
+  #payment-receipt, 
+  #payment-receipt *,
+  #dashboard, 
+  #dashboard * {
+    visibility: visible !important;
   }
-  #dashboard, #dashboard *{
-    visibility: visible;
-  }
-  #dashboard{
-    position: fixed;
-    top: 2%;
-    bottom: 0;
+
+  #dashboard {
+    position: absolute;
+    top: 0;
     left: 0;
-    right: 0;
+    width: 100%;
+    height: auto;
+    overflow: visible !important;
+  }
+
+  * {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  tr {
+    page-break-inside: avoid;
+  }
+  
+  /* Set page margins */
+  @page {
+    margin: 1cm;
   }
 }
