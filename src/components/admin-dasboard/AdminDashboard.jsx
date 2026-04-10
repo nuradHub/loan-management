@@ -16,7 +16,7 @@ import { toast } from "react-toastify"
 
 const AdminDashboard = () => {
 
-  const { selectedMenu, isBorrower, setIsBorrower, isLoan, setIsLoan, isPayment, setIsPayment, isUser, setIsUser, loans, acceptedLoans, setIsMenuOpen, currentUser, showApproveModal, setShowApproveModal, showRejectModal, setShowRejectModal, setSelectedLoan, getAllLoans, activeDisbursement, HandleDeleteLoan, users, handleAllUsers, handleDeleteUser, isEditProfile, setIsEditProfile, rejectedLoans } = useContext(AppContext)
+  const { selectedMenu, setSelectedMenu, isBorrower, setIsBorrower, isLoan, setIsLoan, isPayment, setIsPayment, isUser, setIsUser, loans, acceptedLoans, setIsMenuOpen, currentUser, showApproveModal, setShowApproveModal, showRejectModal, setShowRejectModal, setSelectedLoan, getAllLoans, activeDisbursement, HandleDeleteLoan, users, handleAllUsers, handleDeleteUser, isEditProfile, setIsEditProfile, rejectedLoans } = useContext(AppContext)
 
   const [isLoading, setIsLoading] = useState(false)
   const [months, setMonths] = useState(null)
@@ -194,6 +194,10 @@ const AdminDashboard = () => {
   const targetBorrowers = 200;
   const progressPercentage = Math.min((totalBorrowersCount / targetBorrowers) * 100, 100);
 
+  const handlePrint = ()=> {
+    window.print()
+  }
+
   return (
     <div className="flex w-full h-screen">
       {/* Fixed Components */}
@@ -245,7 +249,7 @@ const AdminDashboard = () => {
           }
 
           {selectedMenu === 'Home' ?
-            <div className="flex flex-col gap-8 w-full animate-fadeIn">
+            <div className="flex flex-col gap-8 w-full animate-fadeIn" id='dashboard'>
               {/* 1. Header Section */}
               <div className="flex flex-col">
                 <h1 className="text-2xl font-semibold text-slate-700">Dashboard Overview</h1>
@@ -278,7 +282,7 @@ const AdminDashboard = () => {
                 <div className="flex-2 bg-white shadow-sm p-5 rounded border border-slate-100">
                   <div className="flex justify-between items-center mb-4">
                     <h2 className="font-bold text-slate-700">Recent Loan Applications</h2>
-                    <button className="text-blue-600 text-xs hover:underline">View All</button>
+                    <button className="text-blue-600 text-xs hover:underline" onClick={()=> setSelectedMenu('Loans')}>View All</button>
                   </div>
                   <div className="overflow-x-auto">
                     <table className="w-full border-collapse">
@@ -315,8 +319,8 @@ const AdminDashboard = () => {
                     <div className="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
                       <div className="bg-blue-600 h-full" style={{ width: `${progressPercentage}%`}}></div>
                     </div>
-                    <p className="text-[11px] text-slate-400">70% of targets reached for this month's collection.</p>
-                    <button className="mt-4 w-full bg-blue-600 text-white py-2 rounded text-sm font-medium hover:bg-blue-700 transition-colors">
+                    <p className="text-[11px] text-slate-400">{progressPercentage}% of targets reached for this month's collection.</p>
+                    <button className="mt-4 w-full bg-blue-600 text-white py-2 rounded text-sm font-medium hover:bg-blue-700 transition-colors" onClick={handlePrint}>
                       Generate Report
                     </button>
                   </div>
